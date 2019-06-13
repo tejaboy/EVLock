@@ -41,4 +41,4 @@ On the server, to start the server, press F5.
 
 ## License
 
-This project is licensed under the ...
+This project is licensed under the GNU General Public License 3.0 - see the [LICENSE.md](https://github.com/tejaboy/EVLock/blob/master/LICENSE) file for more details.
