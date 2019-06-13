@@ -1,0 +1,5 @@
+{
+    "files.eol": "\n",
+    "editor.insertSpaces": false,
+    "ev3devBrowser.download.exclude": "{**/.*,LICENSE,README.md}"
+}
