@@ -3,7 +3,7 @@ import paho.mqtt.client as mqtt
 
 import mqttcontroller
 
-# We retrive the prebuilt cascade so we could use it to detect front-face and smile.
+# We retrieve the prebuilt cascade so we can use it to detect a face and smile.
 face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 smile_cascade = cv2.CascadeClassifier("haarcascade_smile.xml")
 
@@ -12,7 +12,7 @@ def main():
     client = mqtt.Client()
     mqttcontroller.connect(client)
 
-    # This opens up a new window to capture your WebCam video feed.
+    # This opens up a new window to begin capturing with your WebCam
     video_capture = cv2.VideoCapture(0)
 
     # We will loop this program until a `break` is detected.
@@ -38,8 +38,8 @@ def main():
 
 def detect_smile(frame):
     # We first set the local variable `smile` to False.
-    # And then convert the frame to grayscale - easier for OpenCV to detect features.
     smiling = False
+    # Then we convert the frame to grayscale - easier for OpenCV to process
     overlay = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     # Here we make use of `face_cascade` to detect faces.
@@ -49,17 +49,19 @@ def detect_smile(frame):
         # For every faces that we detected, we draw a rectangle over it.
         cv2.rectangle(frame, (x, y), ((x + w), (y + h)), (255, 0, 0), 2)
 
-        # Split the face rectangle to two different types - grayscale and color.
-        # Grayscale: allow OpenCV to detect smile better.
-        # Color: add another rectangle over the smile and return it to the main frame.
+        # Split the face rectangle to two different types - grayscale and color
+        # Grayscale: Allow OpenCV to detect smile better.
+        # Color: Add another rectangle over the smile and
+        # return it to the main frame.
         roi_gray = overlay[y:y + h, x:x + w]
         roi_colour = frame[y:y + h, x:x + w]
 
-        # We then make use of the `smile_cascade` to detect smile within the face.
+        # We then make use of the `smile_cascade` to
+        # detect smiles within the face.
         smiles = smile_cascade.detectMultiScale(roi_gray, 1.25, 45)
 
         for (sx, sy, sw, sh) in smiles:
-            # If a smile is detected, we will set the `smiling` (local) to True.
+            # If a smile is detected, we will set the `smiling` (local) to True
             smiling = True
 
             # Add Rectangle and Texts to colored canvas
