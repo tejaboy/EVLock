@@ -8,6 +8,9 @@ UNLOCK_TOKEN = "1234" # Password to use when commanding the Discord bot to unloc
 
 # We create a new discord commands bot and specify that our commands starts with "!".
 bot = commands.Bot(command_prefix = "!")
+# Create a MQTT client for all MQTT communication
+mqtt_client = mqtt.Client()
+
 
 @bot.command()
 async def unlock(context, _unlock_token = None):
@@ -18,7 +21,7 @@ async def unlock(context, _unlock_token = None):
     if _unlock_token == UNLOCK_TOKEN:
         await context.send("Correct PIN! Unlocking Smart Safe!")
 
-        mqttcontroller.send_unlock()
+        mqttcontroller.send_unlock(mqtt_client)
     else:
         await context.send("Please enter the correct PIN!")
 
@@ -30,7 +33,7 @@ async def on_ready():
     print("Bot ready!")
 
 # Here, we tell the external script, mqttcontroller to connect to the MQTT broker.
-mqttcontroller.connect()
+mqttcontroller.connect(client)
 
 # We enable to Bot over here with the correct DISCORD_TOKEN.
 bot.run(DISCORD_TOKEN)
