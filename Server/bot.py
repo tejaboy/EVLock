@@ -42,7 +42,7 @@ async def on_ready():
     print("Bot ready!")
 
 # Connect the MQTT client to the MQTT broker using mqttcontroller
-mqttcontroller.connect(client)
+mqttcontroller.connect(mqtt_client)
 
 # We enable to Bot over here with the correct DISCORD_TOKEN.
 bot.run(DISCORD_TOKEN)
