@@ -1,4 +1,6 @@
 import cv2
+import paho.mqtt.client as mqtt
+
 import mqttcontroller
 
 # We retrive the prebuilt cascade so we could use it to detect front-face and smile.
@@ -6,30 +8,33 @@ face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 smile_cascade = cv2.CascadeClassifier("haarcascade_smile.xml")
 
 def main():
-    smiling = False
+    # Connect the MQTT client to the mosquitto server
+    client = mqtt.Client()
+    mqttcontroller.connect(client)
 
     # This opens up a new window to capture your WebCam video feed.
     video_capture = cv2.VideoCapture(0)
 
     # We will loop this program until a `break` is detected.
     while True:
-        if not smiling:
-            # If smiling is not true, we keep reading the video feed and try to detect for smile.
+        # We will read the video feed.
+        ret, frame = video_capture.read()
 
-            # We will read the video feed.
-            ret, frame = video_capture.read()
+        # And pass it to the detect_smile() function.
+        # Returned values are edited frame (overlay text, rectangle etc).
+        canvas, smiling = detect_smile(frame)
 
-            # And pass it to the detect_smile() function. Returned values are edited frame (overlay text, rectangle etc).
-            canvas, smiling = detect_smile(frame)
+        # We show the edited frame to the user
+        # for debugging purposes (or maybe "WOW" factor).
+        cv2.imshow("Video", canvas)
 
-            # We show the edited frame to the user - for debugging purposes (or maybe "WOW").
-            cv2.imshow("Video", canvas)
-
-            if smiling:
-                mqttcontroller.send_unlock()
+        if smiling:
+            mqttcontroller.send_unlock(client)
+            break
 
         if cv2.waitKey(1) & 0xff == ord("q"):
             break
+
 
 def detect_smile(frame):
     # We first set the local variable `smile` to False.
@@ -58,11 +63,18 @@ def detect_smile(frame):
             smiling = True
 
             # Add Rectangle and Texts to colored canvas
-            cv2.rectangle(roi_colour, (sx, sy), ((sx + sw), (sy + sh)), (0, 0, 255), 2)
-            cv2.putText(frame, "Smile detected! Unlock request sent!", (150, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 120, 120), 2, cv2.LINE_AA)
-            cv2.putText(frame, "Press 'Q' to quit.", (245, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 120, 120), 2, cv2.LINE_AA)
-            cv2.putText(roi_colour, "Smiling!", (sx, sy), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 123, 123), 1, cv2.LINE_AA)
-    
+            cv2.rectangle(
+                roi_colour, (sx, sy), ((sx + sw), (sy + sh)), (0, 0, 255), 2)
+            cv2.putText(
+                roi_colour, "Smiling!", (sx, sy), cv2.FONT_HERSHEY_SIMPLEX,
+                0.6, (0, 123, 123), 1, cv2.LINE_AA)
+            cv2.putText(
+                frame, "Smile detected! Unlock request sent!", (150, 30),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 120, 120), 2, cv2.LINE_AA)
+            cv2.putText(
+                frame, "Press 'Q' to quit.", (245, 60),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 120, 120), 2, cv2.LINE_AA)
+
     # Finally, we will return `smiling` to the caller.
     return frame, smiling
 
