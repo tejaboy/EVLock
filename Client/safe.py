@@ -11,14 +11,12 @@ def main():
     setupMQTT()
     setupEV3()
 
-
 ## EV3
 def setupEV3():
     # We will do all initialization of motors and sensors here.
     # For this practical, we only be using one motor.
 
     motor = LargeMotor()
-
 
 def open_safe():
     # When this function is called, we will move the motor at 100 Power for
@@ -37,8 +35,8 @@ def setupMQTT():
     # We will create an MQTT Client object here and connect it to the free
     # mosquitto server.
 
-    client = mqtt.Client()
-    client.connect("test.mosquitto.org", 1883, 60)
+    client = mqtt.Client(transport="websockets")
+    client.connect("test.mosquitto.org", 8080, 60)
 
     # Here, we defines that:
     # When the client is connected to the broker, call on_connect()
@@ -61,7 +59,6 @@ def on_connect(client, userdata, flags, rc):
 
     client.subscribe("ev3dev-safe")
 
-
 def on_message(client, userdata, msg):
     # Whenever the broker sends a message (payload),
     # this function will be called.
@@ -72,7 +69,6 @@ def on_message(client, userdata, msg):
         debug_print("Unlocking ...")
         open_safe()
 
-
 def debug_print(*args, **kwargs):
     """Print debug messages to stderr.
     This shows up in the output panel in VS Code
@@ -80,7 +76,6 @@ def debug_print(*args, **kwargs):
 
     print(*args, **kwargs, file=sys.stderr)
     print(*args)
-
 
 if __name__ == '__main__':
     debug_print("Started!")

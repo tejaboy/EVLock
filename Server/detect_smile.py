@@ -9,7 +9,7 @@ smile_cascade = cv2.CascadeClassifier("haarcascade_smile.xml")
 
 def main():
     # Connect the MQTT client to the mosquitto server
-    client = mqtt.Client()
+    client = mqtt.Client(transport="websockets")
     mqttcontroller.connect(client)
 
     # This opens up a new window to begin capturing with your WebCam

@@ -3,7 +3,7 @@ import paho.mqtt.client as mqtt
 
 def connect(client):
     # Connect the client to the free mosquitto server
-    client.connect("test.mosquitto.org", 1883, 60)
+    client.connect("test.mosquitto.org", 8080, 60)
 
     print("Connected to MQTT Server!")
 
