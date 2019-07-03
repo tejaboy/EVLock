@@ -8,8 +8,8 @@ import sys
 
 
 def main():
-    setupMQTT()
     setupEV3()
+    setupMQTT()
 
 ## EV3
 def setupEV3():
@@ -28,6 +28,7 @@ def open_safe():
     #    - https://sites.google.com/site/ev3devpython/learn_ev3_python/using-motors (beginner friendly)
     #    - https://python-ev3dev.readthedocs.io/en/ev3dev-jessie/ ('official' documentation)
 
+    Sound.speak("Unlocking safe!").wait()
     motor.on_for_seconds(100, 1.2)
 
 ## MQTT
