@@ -5,7 +5,7 @@ import paho.mqtt.client as mqtt
 import mqttcontroller
 
 # Discord Bot Token/Key
-DISCORD_TOKEN = "DISCORD_TOKEN" 
+DISCORD_TOKEN = "NTgyMDQ4NTkwNTAzODcwNDc0.XR8Mng.P_NrwzBuueZV_roE65ytRMGMikE"
 # Password to use when commanding the Discord bot to unlock safe
 UNLOCK_TOKEN = "1234"
 
