@@ -9,14 +9,22 @@ smile_cascade = cv2.CascadeClassifier("haarcascade_smile.xml")
 
 def main():
     # Connect the MQTT client to the mosquitto server
-    client = mqtt.Client(transport="websockets")
+    client = mqtt.Client()
     mqttcontroller.connect(client)
+    smiling = False
 
     # This opens up a new window to begin capturing with your WebCam
     video_capture = cv2.VideoCapture(0)
 
     # We will loop this program until a `break` is detected.
     while True:
+        if cv2.waitKey(1) & 0xff == ord("q"):
+            break
+        
+        # Continue to show the Windows - captured smile. Only exit when 'Q' is pressed.
+        if smiling:
+            continue
+        
         # We will read the video feed.
         ret, frame = video_capture.read()
 
@@ -30,10 +38,6 @@ def main():
 
         if smiling:
             mqttcontroller.send_unlock(client)
-            break
-
-        if cv2.waitKey(1) & 0xff == ord("q"):
-            break
 
 
 def detect_smile(frame):
